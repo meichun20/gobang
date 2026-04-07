@@ -1,0 +1,112 @@
+/* 基础样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 页面背景 */
+body {
+    font-family: 'Microsoft YaHei', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 主容器 */
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+/* 标题样式 */
+h1 {
+    color: #fff;
+    font-size: 48px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 游戏信息区域 */
+.game-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #fff;
+}
+
+#game-status {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* 棋盘容器 */
+.board-container {
+    display: inline-block;
+    padding: 20px;
+    background: #d4a86a;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 棋盘画布 */
+#board {
+    display: block;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* 操作按钮区域 */
+.controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* 按钮样式 */
+button {
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+#restart-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+#restart-btn:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+#undo-btn {
+    background: #ff9800;
+    color: white;
+}
+
+#undo-btn:hover {
+    background: #e68a00;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+}
+
+/* 胜利提示动画 */
+@keyframes winner {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.winner-animation {
+    animation: winner 0.5s ease infinite;
+}

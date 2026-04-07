@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋游戏</title>
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 游戏标题 -->
+        <h1>五子棋</h1>
+
+        <!-- 游戏信息显示 -->
+        <div class="game-info">
+            <span id="current-player">你是 黑棋</span>
+            <span id="game-status"></span>
+        </div>
+
+        <!-- 棋盘容器 -->
+        <div class="board-container">
+            <canvas id="board" width="600" height="600"></canvas>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="controls">
+            <button id="restart-btn">重新开始</button>
+            <button id="undo-btn">悔棋</button>
+        </div>
+    </div>
+
+    <!-- 引入游戏主逻辑 -->
+    <script src="main.js"></script>
+</body>
+</html>
