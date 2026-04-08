@@ -21,6 +21,7 @@ let board = [];              // 棋盘数组
 let currentPlayer = PIECE.BLACK;  // 当前玩家
 let gameOver = false;        // 游戏是否结束
 let moveHistory = [];        // 历史记录（用于悔棋）
+let lastMove = null;         // 最后落子位置（用于高亮显示）
 
 // 获取DOM元素
 const canvas = document.getElementById('board');
@@ -39,6 +40,7 @@ function initGame() {
     currentPlayer = PIECE.BLACK;
     gameOver = false;
     moveHistory = [];
+    lastMove = null;  // 重置最后落子位置
 
     // 更新显示
     updateDisplay();
@@ -105,6 +107,24 @@ function drawStarPoints() {
 }
 
 /**
+ * 绘制最后落子位置的高亮标记
+ * 在最后一个落子的位置显示一个红色圆圈
+ */
+function drawLastMoveHighlight() {
+    if (!lastMove) return;
+
+    const x = PADDING + lastMove.col * CELL_SIZE;
+    const y = PADDING + lastMove.row * CELL_SIZE;
+
+    // 绘制红色圆圈高亮
+    ctx.beginPath();
+    ctx.arc(x, y, PIECE_RADIUS + 4, 0, Math.PI * 2);
+    ctx.strokeStyle = '#e74c3c';  // 红色
+    ctx.lineWidth = 3;
+    ctx.stroke();
+}
+
+/**
  * 绘制所有棋子
  */
 function drawAllPieces() {
@@ -115,6 +135,9 @@ function drawAllPieces() {
             }
         }
     }
+
+    // 绘制最后落子位置的高亮标记
+    drawLastMoveHighlight();
 }
 
 /**
@@ -494,6 +517,9 @@ function placePiece(row, col) {
     // 记录历史
     moveHistory.push({ row, col, player: currentPlayer });
 
+    // 记录最后落子位置
+    lastMove = { row, col };
+
     // 放置棋子
     board[row][col] = currentPlayer;
 
@@ -506,6 +532,7 @@ function placePiece(row, col) {
         const winner = currentPlayer === PIECE.BLACK ? '你' : 'AI';
         gameStatusDisplay.textContent = `${winner} 获胜!`;
         gameStatusDisplay.classList.add('winner-animation');
+        currentPlayerDisplay.textContent = '游戏已结束';
         return;
     }
 
@@ -513,6 +540,7 @@ function placePiece(row, col) {
     if (checkDraw()) {
         gameOver = true;
         gameStatusDisplay.textContent = '平局!';
+        currentPlayerDisplay.textContent = '游戏已结束';
         return;
     }
 
@@ -528,20 +556,38 @@ function placePiece(row, col) {
 
 /**
  * 悔棋
+ * 玩家下棋后AI也会下一步，悔棋需要同时撤销两步
  */
 function undo() {
     if (moveHistory.length === 0 || gameOver) {
         return;
     }
 
-    // 获取最后一步
-    const lastMove = moveHistory.pop();
+    // 检查最后一步是否是AI（白棋）
+    // 如果是AI的棋，则需要同时撤销玩家和AI的两步
+    const lastHistoryMove = moveHistory[moveHistory.length - 1];
+    const shouldUndoTwoSteps = lastHistoryMove.player === PIECE.WHITE && moveHistory.length >= 2;
 
-    // 移除棋子
-    board[lastMove.row][lastMove.col] = PIECE.EMPTY;
+    // 撤销第一步（AI或玩家的最后一步）
+    let move1 = moveHistory.pop();
+    board[move1.row][move1.col] = PIECE.EMPTY;
 
-    // 恢复到上一个玩家
-    currentPlayer = lastMove.player;
+    // 如果需要撤销两步
+    if (shouldUndoTwoSteps) {
+        const move2 = moveHistory.pop();
+        board[move2.row][move2.col] = PIECE.EMPTY;
+    }
+
+    // 恢复到玩家回合
+    currentPlayer = PIECE.BLACK;
+    gameOver = false;
+
+    // 更新最后落子位置（悔棋后的最后一步）
+    if (moveHistory.length > 0) {
+        lastMove = moveHistory[moveHistory.length - 1];
+    } else {
+        lastMove = null;
+    }
 
     // 重绘棋盘
     drawBoard();
